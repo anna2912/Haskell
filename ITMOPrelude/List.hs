@@ -91,26 +91,30 @@ dropWhile p (Cons x xs) = if' (p x) (dropWhile p xs) (Cons x xs)
 -- Разбить список по предикату на (takeWhile p xs, dropWhile p xs),
 -- но эффективнее
 span :: (a -> Bool) -> List a -> Pair (List a) (List a)
-span p = undefined
+span p Nil = Pair Nil Nil
+span p (Cons x xs) = if' (p x) (let (Pair ys zs) = span p xs in Pair (Cons x ys) zs) (Pair Nil (Cons x xs))
 
 -- Разбить список по предикату на (takeWhile (not . p) xs, dropWhile (not . p) xs),
 -- но эффективнее
 break :: (a -> Bool) -> List a -> Pair (List a) (List a)
-break = undefined
+break p = span (not . p)
 
 -- n-ый элемент списка (считая с нуля)
 (!!) :: List a -> Nat -> a
 Nil !! n = error "!!: empty list"
-l  !! n = undefined
+(Cons x xs) !! Zero = x
+(Cons x xs) !! (Succ n) = xs !! n
 
 -- Список задом на перёд
 reverse :: List a -> List a
-reverse = undefined
+reverse = reverse' Nil
+  where reverse' y (Cons x xs) = reverse' (Cons x y) xs
+        reverse' y Nil = y
 
 -- (*) Все подсписки данного списка
 subsequences :: List a -> List (List a)
 subsequences Nil = Cons Nil Nil
-subsequences (Cons x xs) = undefined
+subsequences (Cons x xs) = subsequences xs ++ map (Cons x) (subsequences xs)
 
 -- (*) Все перестановки элементов данного списка
 permutations :: List a -> List (List a)
@@ -123,7 +127,7 @@ permutations' = undefined
 
 -- Повторяет элемент бесконечное число раз
 repeat :: a -> List a
-repeat = undefined
+repeat a = Cons a (repeat a)
 
 -- Левая свёртка
 -- порождает такое дерево вычислений:
@@ -137,12 +141,14 @@ repeat = undefined
 --  / \
 -- z  l!!0
 foldl :: (a -> b -> a) -> a -> List b -> a
-foldl f z l = undefined
+foldl f z Nil = z
+foldl f z (Cons x xs) = foldl f (f z x) xs
 
 -- Тот же foldl, но в списке оказываются все промежуточные результаты
 -- last (scanl f z xs) == foldl f z xs
 scanl :: (a -> b -> a) -> a -> List b -> List a
-scanl = undefined
+scanl f z Nil = Cons z Nil
+scanl f z (Cons x xs) = Cons (f z x) (scanl f (f z x) xs)
 
 -- Правая свёртка
 -- порождает такое дерево вычислений:
@@ -157,32 +163,41 @@ scanl = undefined
 --            z
 --            
 foldr :: (a -> b -> b) -> b -> List a -> b
-foldr f z l = undefined
+foldr f z Nil = z
+foldr f z (Cons x xs) = f x (foldr f z xs)
 
 -- Аналогично
 --  head (scanr f z xs) == foldr f z xs.
 scanr :: (a -> b -> b) -> b -> List a -> List b
-scanr = undefined
+scanr f z Nil = Cons z Nil
+scanr f z (Cons x xs) = Cons (f x r) rs where (Cons r rs) = scanr f z xs
 
 -- Должно завершаться за конечное время
 finiteTimeTest = take (Succ $ Succ $ Succ $ Succ Zero) $ foldr (Cons) Nil $ repeat Zero
 
 -- Применяет f к каждому элементу списка
 map :: (a -> b) -> List a -> List b
-map f l = undefined
+map f Nil = Nil
+map f (Cons x xs) = Cons (f x) (map f xs)
 
 -- Склеивает список списков в список
 concat :: List (List a) -> List a
-concat = undefined
+concat Nil = Nil
+concat (Cons x xs) = x ++ concat xs
 
 -- Эквивалент (concat . map), но эффективнее
 concatMap :: (a -> List b) -> List a -> List b
-concatMap = undefined
+concatMap f Nil = Nil
+concatMap f (Cons x xs) = (f x) ++ concatMap f xs
 
 -- Сплющить два списка в список пар длинны min (length a, length b)
 zip :: List a -> List b -> List (Pair a b)
-zip a b = undefined
+zip x Nil = Nil
+zip Nil y = Nil
+zip (Cons x xs) (Cons y ys) = Cons (Pair x y) (zip xs ys)
 
 -- Аналогично, но плющить при помощи функции, а не конструктором Pair
 zipWith :: (a -> b -> c) -> List a -> List b -> List c
-zipWith = undefined
+zipWith f xs Nil = Nil
+zipWith f Nil ys = Nil
+zipWith f (Cons x xs) (Cons y ys) = Cons (f x y) (zipWith f xs ys)
