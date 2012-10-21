@@ -114,7 +114,7 @@ reverse = reverse' Nil
 -- (*) Все подсписки данного списка
 subsequences :: List a -> List (List a)
 subsequences Nil = Cons Nil Nil
-subsequences (Cons x xs) = subsequences xs ++ map (Cons x) (subsequences xs)
+subsequences (Cons x xs) = subsequences xs ++ lmap (Cons x) (subsequences xs)
 
 -- (*) Все перестановки элементов данного списка
 permutations :: List a -> List (List a)
@@ -176,19 +176,19 @@ scanr f z (Cons x xs) = Cons (f x r) rs where (Cons r rs) = scanr f z xs
 finiteTimeTest = take (Succ $ Succ $ Succ $ Succ Zero) $ foldr (Cons) Nil $ repeat Zero
 
 -- Применяет f к каждому элементу списка
-map :: (a -> b) -> List a -> List b
-map f Nil = Nil
-map f (Cons x xs) = Cons (f x) (map f xs)
+lmap :: (a -> b) -> List a -> List b
+lmap f Nil = Nil
+lmap f (Cons x xs) = Cons (f x) (lmap f xs)
 
 -- Склеивает список списков в список
 concat :: List (List a) -> List a
 concat Nil = Nil
 concat (Cons x xs) = x ++ concat xs
 
--- Эквивалент (concat . map), но эффективнее
-concatMap :: (a -> List b) -> List a -> List b
-concatMap f Nil = Nil
-concatMap f (Cons x xs) = (f x) ++ concatMap f xs
+-- Эквивалент (concat . lmap), но эффективнее
+concatlmap :: (a -> List b) -> List a -> List b
+concatlmap f Nil = Nil
+concatlmap f (Cons x xs) = (f x) ++ concatlmap f xs
 
 -- Сплющить два списка в список пар длинны min (length a, length b)
 zip :: List a -> List b -> List (Pair a b)

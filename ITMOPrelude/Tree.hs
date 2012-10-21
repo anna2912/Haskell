@@ -20,9 +20,9 @@ rotateLeft (Node x left (Node y left' right')) = Node y (Node x left left') righ
 
 rotateRight (Node x (Node y left' right') right) = Node y left' (Node x right' right)
 
-map :: (a -> b) -> Tree a -> Tree b
-map f  Leaf = Leaf
-map f (Node a left right) = Node (f a) (map f left) (map f right)
+tmap :: (a -> b) -> Tree a -> Tree b
+tmap f  Leaf = Leaf
+tmap f (Node a left right) = Node (f a) (tmap f left) (tmap f right)
 
 foldr :: (a -> b -> b) -> b -> Tree a -> b
 foldr f a Leaf = a
