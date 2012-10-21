@@ -1,6 +1,8 @@
 ﻿{-# LANGUAGE NoImplicitPrelude #-}
 module ITMOPrelude.Categories where
 
+import Prelude (flip)
+
 import ITMOPrelude.List
 import ITMOPrelude.Tree
   
@@ -23,3 +25,6 @@ instance Functor List where
 instance Functor Tree where
 	fmap = tmap
 
+instance Monad List where
+	return = flip Cons Nil
+	xs >>= f = concatMap f xs

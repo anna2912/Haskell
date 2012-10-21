@@ -185,10 +185,10 @@ concat :: List (List a) -> List a
 concat Nil = Nil
 concat (Cons x xs) = x ++ concat xs
 
--- Эквивалент (concat . lmap), но эффективнее
-concatlmap :: (a -> List b) -> List a -> List b
-concatlmap f Nil = Nil
-concatlmap f (Cons x xs) = (f x) ++ concatlmap f xs
+-- Эквивалент (concat . map), но эффективнее
+concatMap :: (a -> List b) -> List a -> List b
+concatMap f (Cons x xs) = (f x) ++ (concatMap f xs)
+concatMap f Nil = Nil
 
 -- Сплющить два списка в список пар длинны min (length a, length b)
 zip :: List a -> List b -> List (Pair a b)
