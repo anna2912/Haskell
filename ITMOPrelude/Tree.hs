@@ -1,4 +1,4 @@
-{-# LANGUAGE NoImplicitPrelude #-}
+﻿{-# LANGUAGE NoImplicitPrelude #-}
 module ITMOPrelude.Tree where
 
 import Prelude (Show,Read,error,)

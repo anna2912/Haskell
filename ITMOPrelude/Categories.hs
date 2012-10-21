@@ -1,4 +1,4 @@
-{-# LANGUAGE NoImplicitPrelude #-}
+﻿{-# LANGUAGE NoImplicitPrelude #-}
 module ITMOPrelude.Categories where
 
 import ITMOPrelude.List

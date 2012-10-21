@@ -1,4 +1,4 @@
-{-# LANGUAGE NoImplicitPrelude #-}
+﻿{-# LANGUAGE NoImplicitPrelude #-}
 module ITMOPrelude.Algebra where
 
 import ITMOPrelude.Primitive
